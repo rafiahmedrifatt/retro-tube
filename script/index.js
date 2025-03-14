@@ -1,3 +1,4 @@
+//Category button loaded and displayed
 function loadCategories() {
     fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
         .then(res => res.json())
@@ -9,25 +10,47 @@ loadCategories()
 function displayCategories(categories) {
     const container = document.getElementById('category-container')
     for (const category of categories) {
+        // console.log(category.category_id)
         const categorySection = document.createElement('div')
         categorySection.innerHTML = `
-            <button class="btn btn-sm">${category.category}</button>
+            <button onclick="loadVideosAccordingToCategories(${category.category_id})" class="category-btn btn btn-sm">${category.category}</button>
         `
         container.appendChild(categorySection)
     }
 }
 
-async function loadVideos() {
-    await fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
+// const categoryBtn = document.getElementsByClassName('.category-btn');
+// console.log(categoryBtn)
+// for (let i = 0; i < categoryBtn.length; i++) {
+//     console.log(categoryBtn[i])
+//     categoryBtn.addEventListener('click', (event) => {
+//         console.log('btn clicked')
+//     })
+// }
+
+
+//videos loaded and displayed
+function loadVideos() {
+    fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
         .then(res => res.json())
         .then(data => videos(data.videos))
 }
 
 
 const videos = (video) => {
-    const videosContainer = document.getElementById('videos-container');
+    let videosContainer = document.getElementById('videos-container');
+    if (video.length === 0) {
+        videosContainer.innerHTML =
+            `<div class="col-span-full text-center">
+            <div>
+                <img class="mx-auto relative" src="assets/Icon.png" alt="">
+            </div>
+            <p class="text-4xl font-bold mt-10">Sorry! No video available according to this niche</p>
+        </div>`
+        return
+    }
+    videosContainer.innerHTML = ''
     video.forEach(element => {
-        console.log(element.authors[0].profile_name)
         const videoCard = document.createElement('div');
         videoCard.innerHTML = `
         <div class="card bg-base-100">
@@ -58,5 +81,23 @@ const videos = (video) => {
     });
 
 }
+
+
+//videos loaded according to categories and displayed accordingly
+
+const loadVideosAccordingToCategories = (id) => {
+    const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => videos(data.category))
+}
+
+const reload = () => {
+    location.reload()
+}
+
+
+
 
 loadVideos()
