@@ -53,7 +53,7 @@ const videos = (video) => {
     video.forEach(element => {
         const videoCard = document.createElement('div');
         videoCard.innerHTML = `
-        <div class="card bg-base-100">
+        <div class="card bg-base-100 cursor-pointer" onclick="my_modal_1.showModal()">
         <figure class="relative w-full h-[200px] object-cover">
         <img src="${element.thumbnail}" />
         <span class="absolute bg-black text-white rounded-md bottom-2 right-2 p-1">3hrs 56 min
@@ -98,6 +98,12 @@ const reload = () => {
 }
 
 
+// load video details
+const videoDetails = () => {
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/video/${video_id}`)
+        .then(res => res.json())
+        .then(data => console.log(data))
+}
 
 
 loadVideos()
